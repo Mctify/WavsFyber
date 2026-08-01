@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wavsFyber</title>
+  <style>
+    /* Global Reset & Dark Theme */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0b0716;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    /* Container for managing overlay positioning */
+    .app-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    /* Animation Keyframes */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Page View Toggle Logic */
+    .page-view {
+      display: none;
+      width: 100%;
+    }
+
+    /* Default view is main-menu */
+    #main-menu {
+      display: block;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Show target page when hash matches */
+    #wavsfyber-page:target,
+    #characters-page:target,
+    #artisol-page:target {
+      display: block;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    #wavsfyber-page:target,
+    #artisol-page:target {
+      display: flex;
+    }
+
+    /* Hide main menu when any target page is active */
+    #wavsfyber-page:target ~ #main-menu,
+    #characters-page:target ~ #main-menu,
+    #artisol-page:target ~ #main-menu {
+      display: none !important;
+    }
+
+    /* =========================================
+       COMMON HEADER STYLES
+       ========================================= */
+    header {
+      width: 100%;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #1e1b30;
+      padding-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .brand h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand p {
+      font-size: 14px;
+      color: #636080;
+      margin-top: 4px;
+    }
+
+    .search-btn {
+      background: #ffffff;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .search-btn:hover {
+      transform: scale(1.05);
+      background: #e2e2e2;
+    }
+
+    .search-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #0b0716;
+    }
+
+    /* Floating Close / Back Button */
+    .close-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ffffff;
+      color: #0b0716;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 100;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.04);
+      background: #e2e2e2;
+    }
+
+    /* =========================================
+       1. MAIN MENU STYLES
+       ========================================= */
+    main.container {
+      width: 100%;
+      background-color: #100b21;
+      border: 1px solid #1c1635;
+      border-radius: 12px;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .welcome-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .welcome-subtitle {
+      color: #8c88ad;
+      font-size: 14px;
+      margin-bottom: 40px;
+    }
+
+    .grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    /* Base Card Style */
+    .card {
+      width: 220px;
+      height: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Card 1: WavsFyber with background image */
+    .card-wavsfyber {
+      background-image: url('https://res.cloudinary.com/ddows9h3k/image/upload/v1785592681/Untitled258_20260801205548_ghqqzu.png');
+      background-size: cover;
+      background-position: center;
+      border: 2px solid #b081eb;
+    }
+
+    .card-wavsfyber::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1;
+      transition: background 0.2s ease;
+    }
+
+    .card-wavsfyber:hover::before {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    /* Card 2: Characters (Violet) */
+    .card-violet { 
+      background: #9d73eb; 
+      border: 2px solid #9d73eb; 
+    }
+
+    /* Card 3: Links (Blue) */
+    .card-blue { 
+      background: #62baf3; 
+      border: 2px solid #62baf3; 
+    }
+
+    /* Center Icon for Violet and Blue Cards */
+    .card-icon {
+      width: 90px;
+      height: 90px;
+      fill: #ffffff;
+      margin-bottom: 20px;
+      z-index: 1;
+    }
+
+    /* Bottom Overlay Text Box */
+    .card-bottom-info {
+      position: absolute;
+      bottom: 0; 
+      left: 0; 
+      width: 100%;
+      padding: 14px 12px;
+      text-align: center;
+      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+      z-index: 2;
+    }
+
+    .card-bottom-info h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .card-bottom-info p {
+      font-size: 11px;
+      color: #dfdfef;
+      margin-top: 3px;
+      word-break: break-all;
+    }
+
+    /* =========================================
+       2. CHARACTERS PAGE STYLES
+       ========================================= */
+    .char-grid-container {
+      width: 100%;
+      background-color: #0d081b;
+      border: 1px solid #1c1635;
+      border-radius: 12px;
+      padding: 24px;
+      min-height: 500px;
+    }
+
+    .char-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+    }
+
+    .char-item-card {
+      background-color: #120c24;
+      border: 1px solid #231c3f;
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .char-item-card:hover {
+      transform: translateY(-4px);
+      border-color: #635299;
+    }
+
+    .char-avatar-wrapper {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #080512;
+      margin-bottom: 8px;
+    }
+
+    .char-avatar-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .char-item-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* =========================================
+       3. DETAIL PAGE STYLES
+       ========================================= */
+    .detail-layout {
+      gap: 20px;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 240px;
+      background-color: #100b21;
+      border: 1px solid #1c1635;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 550px;
+    }
+
+    .sidebar-card-img {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-info {
+      text-align: center;
+      width: 100%;
+    }
+
+    .sidebar-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .sidebar-info p {
+      font-size: 11px;
+      color: #8c88ad;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    .share-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid #282247;
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s ease;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .share-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .detail-main {
+      flex: 1;
+      background-color: #100b21;
+      border: 1px solid #1c1635;
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .nav-tabs {
+      background: #0b0716;
+      padding: 6px 16px;
+      border-radius: 20px;
+      display: inline-flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #1c1635;
+    }
+
+    .nav-tabs span {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .nav-tabs span.active {
+      border-bottom: 2px solid #ffffff;
+      padding-bottom: 2px;
+    }
+
+    .nav-tabs span.inactive {
+      color: #636080;
+    }
+
+    .breadcrumb {
+      font-size: 13px;
+      color: #8c88ad;
+      margin-bottom: 4px;
+    }
+
+    .breadcrumb a {
+      color: #9d73eb;
+      text-decoration: none;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 32px;
+    }
+
+    .content-split {
+      display: flex;
+      gap: 24px;
+    }
+
+    .bio-section {
+      flex: 1;
+    }
+
+    .bio-section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .bio-section p {
+      font-size: 15px;
+      color: #b0accf;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .char-card {
+      width: 280px;
+      background: #0c081a;
+      border: 1px solid #201a3c;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .char-card-header {
+      background: #171230;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: #8c88ad;
+      font-weight: 600;
+    }
+
+    .char-card-img {
+      width: 100%;
+      height: auto;
+      max-height: 280px;
+      object-fit: contain;
+      background: #080512;
+      padding: 12px;
+      display: block;
+    }
+
+    .char-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .char-table tr {
+      border-top: 1px solid #1c1635;
+    }
+
+    .char-table td {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .char-table td:first-child {
+      color: #ffffff;
+      font-weight: 600;
+      width: 40%;
+    }
+
+    .char-table td:last-child {
+      color: #9d98c4;
+    }
+
+    /* =========================================
+       4. MOBILE RESPONSIVE MEDIA QUERIES
+       ========================================= */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      /* Stack detail pages vertically on mobile */
+      #wavsfyber-page:target,
+      #artisol-page:target,
+      .detail-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-height: auto;
+        gap: 16px;
+      }
+
+      .sidebar-card-img {
+        max-width: 160px;
+        margin: 0 auto 12px auto;
+        display: block;
+      }
+
+      .content-split {
+        flex-direction: column;
+      }
+
+      .char-card {
+        width: 100%;
+      }
+
+      .grid {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .char-cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 12px;
+      }
+
+      .close-btn {
+        bottom: 12px;
+        right: 12px;
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-wrapper">
+
+    <!-- =========================================
+         PAGE 4: ARTISOL DETAIL VIEW
+         ========================================= -->
+    <div id="artisol-page" class="page-view detail-layout">
+      
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div style="width: 100%;">
+          <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785594008/Untitled259_20260801211740_pdadwj.png" alt="Artisol Card" class="sidebar-card-img">
+          <div class="sidebar-info">
+            <h3>Artisol</h3>
+          </div>
+        </div>
+
+        <button class="share-btn">
+          <span>↪</span> Share
+        </button>
+      </aside>
+
+      <!-- Main Detail Area -->
+      <main class="detail-main">
+        <!-- Top Navigation Tabs -->
+        <div class="nav-tabs">
+          <span class="active">Main</span>
+          <span class="inactive">Gallery</span>
+          <span class="inactive">Related Cards</span>
+        </div>
+
+        <!-- Breadcrumbs & Title -->
+        <div class="breadcrumb"><a href="#characters-page">gd gamings fursona</a> /</div>
+        <h1 class="page-title">Artisol</h1>
+
+        <!-- Split Layout: Bio on Left, Character Card on Right -->
+        <div class="content-split">
+          
+          <!-- Bio / Description Section -->
+          <section class="bio-section">
+            <p>Artisol is a Fursona made by Macro Gaming in gd gaming commuity.</p>
+          </section>
+
+          <!-- Right Side Character Info Card -->
+          <aside class="char-card">
+            <div class="char-card-header">Character rules</div>
+            <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785594078/Untitled257_20260801121347_fk3cql.png" alt="Artisol Character Rules" class="char-card-img">
+            
+            <table class="char-table">
+              <tr>
+                <td>Species</td>
+                <td>Cat</td>
+              </tr>
+              <tr>
+                <td>Pronouns</td>
+                <td>She/He</td>
+              </tr>
+              <tr>
+                <td>Gender</td>
+                <td>Trans Female</td>
+              </tr>
+              <tr>
+                <td>Sexuality</td>
+                <td>Bisexual</td>
+              </tr>
+            </table>
+          </aside>
+
+        </div>
+      </main>
+
+      <!-- Floating Back Button -->
+      <a href="#characters-page" class="close-btn">‹ Close</a>
+    </div>
+
+    <!-- =========================================
+         PAGE 2: CHARACTERS GRID VIEW
+         ========================================= -->
+    <div id="characters-page" class="page-view">
+      <!-- Header -->
+      <header>
+        <div class="brand">
+          <h1>gd gamings fursona <span style="font-size: 14px; opacity: 0.6;">↪</span></h1>
+          <p>Terra</p>
+        </div>
+        <button class="search-btn" title="Search">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Main Grid Container -->
+      <main class="char-grid-container">
+        <div class="char-cards-grid">
+          
+          <!-- Character Card: Artisol -->
+          <a href="#artisol-page" class="char-item-card">
+            <div class="char-avatar-wrapper">
+              <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785594008/Untitled259_20260801211740_pdadwj.png" alt="Artisol">
+            </div>
+            <div class="char-item-name">Artisol</div>
+          </a>
+
+        </div>
+      </main>
+
+      <!-- Bottom Navigation Back Button -->
+      <a href="#main-menu" class="close-btn">‹ Main Menu</a>
+    </div>
+
+    <!-- =========================================
+         PAGE 3: WAVSFYBER DETAIL VIEW
+         ========================================= -->
+    <div id="wavsfyber-page" class="page-view detail-layout">
+      
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div style="width: 100%;">
+          <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785592681/Untitled258_20260801205548_ghqqzu.png" alt="WavsFyber Card" class="sidebar-card-img">
+          <div class="sidebar-info">
+            <h3>WavsFyber</h3>
+            <p>Sarun.sky.07@gmail.com</p>
+          </div>
+        </div>
+
+        <button class="share-btn">
+          <span>↪</span> Share
+        </button>
+      </aside>
+
+      <!-- Main Detail Area -->
+      <main class="detail-main">
+        <!-- Tabs Header -->
+        <div class="nav-tabs">
+          <span class="active">Main</span>
+        </div>
+
+        <!-- Breadcrumbs & Title -->
+        <div class="breadcrumb"><a href="#main-menu">Main Menu</a> /</div>
+        <h1 class="page-title">WavsFyber</h1>
+
+        <!-- Split Layout: Bio on Left, Character Card on Right -->
+        <div class="content-split">
+          
+          <!-- Bio / Description Section -->
+          <section class="bio-section">
+            <h2>Hello!</h2>
+            <p>this website is based off artifyber website</p>
+          </section>
+
+          <!-- Right Side Character Info Card -->
+          <aside class="char-card">
+            <div class="char-card-header">Character rules</div>
+            <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785592731/Untitled258_20260801205529_bvstzu.png" alt="Character Artwork" class="char-card-img">
+            
+            <table class="char-table">
+              <tr>
+                <td>Species</td>
+                <td>Fyber</td>
+              </tr>
+              <tr>
+                <td>Pronouns</td>
+                <td>She/He</td>
+              </tr>
+              <tr>
+                <td>Gender</td>
+                <td>Trans Female</td>
+              </tr>
+              <tr>
+                <td>Sexuality</td>
+                <td>Bisexual</td>
+              </tr>
+            </table>
+          </aside>
+
+        </div>
+      </main>
+
+      <!-- Floating Back Button -->
+      <a href="#main-menu" class="close-btn">‹ Main Menu</a>
+    </div>
+
+    <!-- =========================================
+         PAGE 1: MAIN MENU (HOME)
+         ========================================= -->
+    <div id="main-menu" class="page-view">
+      <!-- Top Header -->
+      <header>
+        <div class="brand">
+          <h1>Main Menu</h1>
+          <p>wavsfyber.xyz</p>
+        </div>
+        <button class="search-btn" title="Search">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Main Content Container -->
+      <main class="container">
+        <h2 class="welcome-title">Welcome!</h2>
+        <p class="welcome-subtitle">Click an item to view its content.</p>
+
+        <!-- Cards Grid -->
+        <div class="grid">
+          
+          <!-- Card 1: WavsFyber -->
+          <a href="#wavsfyber-page" class="card card-wavsfyber">
+            <div class="card-bottom-info">
+              <h2>WavsFyber</h2>
+              <p>Sarun.sky.07@gmail.com</p>
+            </div>
+          </a>
+
+          <!-- Card 2: Characters -->
+          <a href="#characters-page" class="card card-violet">
+            <svg class="card-icon" viewBox="0 0 100 100">
+              <path d="M 15 25 L 35 45 L 20 65 L 40 60 L 50 85 L 60 60 L 80 65 L 65 45 L 85 25 L 60 35 L 50 15 L 40 35 Z" fill="#ffffff"/>
+              <ellipse cx="40" cy="50" rx="4" ry="7" fill="#9d73eb"/>
+              <ellipse cx="60" cy="50" rx="4" ry="7" fill="#9d73eb"/>
+            </svg>
+            <div class="card-bottom-info">
+              <h2>Characters</h2>
+              <p>Explore Artisol & more</p>
+            </div>
+          </a>
+
+          <!-- Card 3: Links (TikTok) -->
+          <a href="https://www.tiktok.com/@sinewavsgaming" target="_blank" rel="noopener noreferrer" class="card card-blue">
+            <svg class="card-icon" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="38" stroke="#ffffff" stroke-width="6" fill="none"/>
+              <ellipse cx="50" cy="50" rx="18" ry="38" stroke="#ffffff" stroke-width="5" fill="none"/>
+              <line x1="12" y1="50" x2="88" y2="50" stroke="#ffffff" stroke-width="5"/>
+              <line x1="20" y1="30" x2="80" y2="30" stroke="#ffffff" stroke-width="4"/>
+              <line x1="20" y1="70" x2="80" y2="70" stroke="#ffffff" stroke-width="4"/>
+            </svg>
+            <div class="card-bottom-info">
+              <h2>Links</h2>
+              <p>All links to my social media</p>
+            </div>
+          </a>
+
+        </div>
+      </main>
+
+      <!-- Bottom Floating Close Button -->
+      <button class="close-btn">
+        ‹ Close
+      </button>
+    </div>
+
+  </div>
+
+</body>
+</html>
