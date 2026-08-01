@@ -58,20 +58,28 @@
     /* Show target page when hash matches */
     #wavsfyber-page:target,
     #characters-page:target,
-    #artisol-page:target {
+    #artisol-page:target,
+    #artiyolk-page:target {
       display: block;
       animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     #wavsfyber-page:target,
-    #artisol-page:target {
+    #artisol-page:target,
+    #artiyolk-page:target {
       display: flex;
     }
 
-    /* Hide main menu when any target page is active */
+    /* Hide main menu when ANY target page is active in hash */
+    .app-wrapper:has(:target) #main-menu {
+      display: none !important;
+    }
+
+    /* Fallback for older browsers without :has support */
     #wavsfyber-page:target ~ #main-menu,
     #characters-page:target ~ #main-menu,
-    #artisol-page:target ~ #main-menu {
+    #artisol-page:target ~ #main-menu,
+    #artiyolk-page:target ~ #main-menu {
       display: none !important;
     }
 
@@ -317,6 +325,9 @@
       overflow: hidden;
       background: #080512;
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .char-avatar-wrapper img {
@@ -534,6 +545,7 @@
       /* Stack detail pages vertically on mobile */
       #wavsfyber-page:target,
       #artisol-page:target,
+      #artiyolk-page:target,
       .detail-layout {
         flex-direction: column;
       }
@@ -587,187 +599,7 @@
   <div class="app-wrapper">
 
     <!-- =========================================
-         PAGE 4: ARTISOL DETAIL VIEW
-         ========================================= -->
-    <div id="artisol-page" class="page-view detail-layout">
-      
-      <!-- Left Sidebar -->
-      <aside class="sidebar">
-        <div style="width: 100%;">
-          <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785594008/Untitled259_20260801211740_pdadwj.png" alt="Artisol Card" class="sidebar-card-img">
-          <div class="sidebar-info">
-            <h3>Artisol</h3>
-          </div>
-        </div>
-
-        <button class="share-btn">
-          <span>↪</span> Share
-        </button>
-      </aside>
-
-      <!-- Main Detail Area -->
-      <main class="detail-main">
-        <!-- Top Navigation Tabs -->
-        <div class="nav-tabs">
-          <span class="active">Main</span>
-          <span class="inactive">Gallery</span>
-          <span class="inactive">Related Cards</span>
-        </div>
-
-        <!-- Breadcrumbs & Title -->
-        <div class="breadcrumb"><a href="#characters-page">gd gamings fursona</a> /</div>
-        <h1 class="page-title">Artisol</h1>
-
-        <!-- Split Layout: Bio on Left, Character Card on Right -->
-        <div class="content-split">
-          
-          <!-- Bio / Description Section -->
-          <section class="bio-section">
-            <p>Artisol is a Fursona made by Macro Gaming in gd gaming commuity.</p>
-          </section>
-
-          <!-- Right Side Character Info Card -->
-          <aside class="char-card">
-            <div class="char-card-header">Character rules</div>
-            <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785594078/Untitled257_20260801121347_fk3cql.png" alt="Artisol Character Rules" class="char-card-img">
-            
-            <table class="char-table">
-              <tr>
-                <td>Species</td>
-                <td>Cat</td>
-              </tr>
-              <tr>
-                <td>Pronouns</td>
-                <td>She/He</td>
-              </tr>
-              <tr>
-                <td>Gender</td>
-                <td>Trans Female</td>
-              </tr>
-              <tr>
-                <td>Sexuality</td>
-                <td>Bisexual</td>
-              </tr>
-            </table>
-          </aside>
-
-        </div>
-      </main>
-
-      <!-- Floating Back Button -->
-      <a href="#characters-page" class="close-btn">‹ Close</a>
-    </div>
-
-    <!-- =========================================
-         PAGE 2: CHARACTERS GRID VIEW
-         ========================================= -->
-    <div id="characters-page" class="page-view">
-      <!-- Header -->
-      <header>
-        <div class="brand">
-          <h1>gd gamings fursona <span style="font-size: 14px; opacity: 0.6;">↪</span></h1>
-          <p>Terra</p>
-        </div>
-        <button class="search-btn" title="Search">
-          <svg viewBox="0 0 24 24">
-            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-          </svg>
-        </button>
-      </header>
-
-      <!-- Main Grid Container -->
-      <main class="char-grid-container">
-        <div class="char-cards-grid">
-          
-          <!-- Character Card: Artisol -->
-          <a href="#artisol-page" class="char-item-card">
-            <div class="char-avatar-wrapper">
-              <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785594008/Untitled259_20260801211740_pdadwj.png" alt="Artisol">
-            </div>
-            <div class="char-item-name">Artisol</div>
-          </a>
-
-        </div>
-      </main>
-
-      <!-- Bottom Navigation Back Button -->
-      <a href="#main-menu" class="close-btn">‹ Main Menu</a>
-    </div>
-
-    <!-- =========================================
-         PAGE 3: WAVSFYBER DETAIL VIEW
-         ========================================= -->
-    <div id="wavsfyber-page" class="page-view detail-layout">
-      
-      <!-- Left Sidebar -->
-      <aside class="sidebar">
-        <div style="width: 100%;">
-          <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785592681/Untitled258_20260801205548_ghqqzu.png" alt="WavsFyber Card" class="sidebar-card-img">
-          <div class="sidebar-info">
-            <h3>WavsFyber</h3>
-            <p>Sarun.sky.07@gmail.com</p>
-          </div>
-        </div>
-
-        <button class="share-btn">
-          <span>↪</span> Share
-        </button>
-      </aside>
-
-      <!-- Main Detail Area -->
-      <main class="detail-main">
-        <!-- Tabs Header -->
-        <div class="nav-tabs">
-          <span class="active">Main</span>
-        </div>
-
-        <!-- Breadcrumbs & Title -->
-        <div class="breadcrumb"><a href="#main-menu">Main Menu</a> /</div>
-        <h1 class="page-title">WavsFyber</h1>
-
-        <!-- Split Layout: Bio on Left, Character Card on Right -->
-        <div class="content-split">
-          
-          <!-- Bio / Description Section -->
-          <section class="bio-section">
-            <h2>Hello!</h2>
-            <p>this website is based off artifyber website</p>
-          </section>
-
-          <!-- Right Side Character Info Card -->
-          <aside class="char-card">
-            <div class="char-card-header">Character rules</div>
-            <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785592731/Untitled258_20260801205529_bvstzu.png" alt="Character Artwork" class="char-card-img">
-            
-            <table class="char-table">
-              <tr>
-                <td>Species</td>
-                <td>Fyber</td>
-              </tr>
-              <tr>
-                <td>Pronouns</td>
-                <td>She/He</td>
-              </tr>
-              <tr>
-                <td>Gender</td>
-                <td>Trans Female</td>
-              </tr>
-              <tr>
-                <td>Sexuality</td>
-                <td>Bisexual</td>
-              </tr>
-            </table>
-          </aside>
-
-        </div>
-      </main>
-
-      <!-- Floating Back Button -->
-      <a href="#main-menu" class="close-btn">‹ Main Menu</a>
-    </div>
-
-    <!-- =========================================
-         PAGE 1: MAIN MENU (HOME)
+         PAGE 1: MAIN MENU (DEFAULT HOME)
          ========================================= -->
     <div id="main-menu" class="page-view">
       <!-- Top Header -->
@@ -829,14 +661,136 @@
 
         </div>
       </main>
-
-      <!-- Bottom Floating Close Button -->
-      <button class="close-btn">
-        ‹ Close
-      </button>
     </div>
 
-  </div>
+    <!-- =========================================
+         PAGE 2: CHARACTERS GRID VIEW
+         ========================================= -->
+    <div id="characters-page" class="page-view">
+      <!-- Header -->
+      <header>
+        <div class="brand">
+          <h1>gd gamings fursona <span style="font-size: 14px; opacity: 0.6;">↪</span></h1>
+          <p>Terra</p>
+        </div>
+        <button class="search-btn" title="Search">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+      </header>
 
-</body>
-</html>
+      <!-- Main Grid Container -->
+      <main class="char-grid-container">
+        <div class="char-cards-grid">
+          
+          <!-- Character Card 1: Artisol -->
+          <a href="#artisol-page" class="char-item-card">
+            <div class="char-avatar-wrapper">
+              <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785594008/Untitled259_20260801211740_pdadwj.png" alt="Artisol">
+            </div>
+            <div class="char-item-name">Artisol</div>
+          </a>
+
+          <!-- Character Card 2: Artiyolk / Yolky -->
+          <a href="#artiyolk-page" class="char-item-card">
+            <div class="char-avatar-wrapper">
+              <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785598913/Untitled254_20260731230917_kwwibz.png" alt="Artiyolk / Yolky">
+            </div>
+            <div class="char-item-name">Artiyolk / Yolky</div>
+          </a>
+
+        </div>
+      </main>
+
+      <!-- Bottom Navigation Back Button -->
+      <a href="#" class="close-btn">‹ Main Menu</a>
+    </div>
+
+    <!-- =========================================
+         PAGE 3: WAVSFYBER DETAIL VIEW
+         ========================================= -->
+    <div id="wavsfyber-page" class="page-view detail-layout">
+      
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div style="width: 100%;">
+          <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785592681/Untitled258_20260801205548_ghqqzu.png" alt="WavsFyber Card" class="sidebar-card-img">
+          <div class="sidebar-info">
+            <h3>WavsFyber</h3>
+            <p>Sarun.sky.07@gmail.com</p>
+          </div>
+        </div>
+
+        <button class="share-btn">
+          <span>↪</span> Share
+        </button>
+      </aside>
+
+      <!-- Main Detail Area -->
+      <main class="detail-main">
+        <!-- Tabs Header -->
+        <div class="nav-tabs">
+          <span class="active">Main</span>
+        </div>
+
+        <!-- Breadcrumbs & Title -->
+        <div class="breadcrumb"><a href="#">Main Menu</a> /</div>
+        <h1 class="page-title">WavsFyber</h1>
+
+        <!-- Split Layout: Bio on Left, Character Card on Right -->
+        <div class="content-split">
+          
+          <!-- Bio / Description Section -->
+          <section class="bio-section">
+            <h2>Hello!</h2>
+            <p>this website is based off artifyber website</p>
+          </section>
+
+          <!-- Right Side Character Info Card -->
+          <aside class="char-card">
+            <div class="char-card-header">Character rules</div>
+            <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785592731/Untitled258_20260801205529_bvstzu.png" alt="Character Artwork" class="char-card-img">
+            
+            <table class="char-table">
+              <tr>
+                <td>Species</td>
+                <td>Fyber</td>
+              </tr>
+              <tr>
+                <td>Pronouns</td>
+                <td>She/He</td>
+              </tr>
+              <tr>
+                <td>Gender</td>
+                <td>Trans Female</td>
+              </tr>
+              <tr>
+                <td>Sexuality</td>
+                <td>Bisexual</td>
+              </tr>
+            </table>
+          </aside>
+
+        </div>
+      </main>
+
+      <!-- Floating Back Button -->
+      <a href="#" class="close-btn">‹ Main Menu</a>
+    </div>
+
+    <!-- =========================================
+         PAGE 4: ARTISOL DETAIL VIEW
+         ========================================= -->
+    <div id="artisol-page" class="page-view detail-layout">
+      
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div style="width: 100%;">
+          <img src="https://res.cloudinary.com/ddows9h3k/image/upload/v1785594008/Untitled259_20260801211740_pdadwj.png" alt="Artisol Card" class="sidebar-card-img">
+          <div class="sidebar-info">
+            <h3>Artisol</h3>
+          </div>
+        </div>
+
+        <button class="share
